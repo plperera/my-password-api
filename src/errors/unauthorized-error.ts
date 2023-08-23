@@ -1,6 +1,6 @@
-export function unauthorizedError() {
+export function unauthorizedError( message: string ) {
   return {
     name: "UnauthorizedError",
-    message: "You must be signed in to continue",
+    message: message || "",
   };
 }

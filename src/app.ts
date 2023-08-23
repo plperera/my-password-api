@@ -1,32 +1,20 @@
+import { loadEnv, connectDb, disconnectDB } from "@/config";
+import cors from "cors";
+import express, { Express } from "express";
 import "reflect-metadata";
 import "express-async-errors";
-import express, { Express } from "express";
-import cors from "cors";
-
-import { loadEnv, connectDb, disconnectDB } from "@/config";
-import { userRouter } from "./routers/user-router";
+import { testeRouter } from "./routers/teste-router";
 import { authRouter } from "./routers/auth-router";
-import { clientRouter } from "./routers/client-router";
-import { addressRouter } from "./routers/address-router";
-import { productRouter } from "./routers/product-router";
-import { ordderRouter } from "./routers/ordder-router";
-import { paymentTypeRouter } from "./routers/paymentType-router";
 
 loadEnv();
-
 
 const app = express();
 app
   .use(cors())
   .use(express.json())
-  .get("/health", (_req, res) => res.send("OK!"))
-  .use("/address", addressRouter)
-  .use("/user", userRouter)
-  .use("/clients", clientRouter)
+  .use("/teste", testeRouter)
   .use("/auth", authRouter)
-  .use("/products", productRouter)
-  .use("/ordder", ordderRouter)
-  .use("/payment-type", paymentTypeRouter)
+  .get("/health", (_req, res) => res.send("OK!"))
 
 export function init(): Promise<Express> {
   connectDb();
