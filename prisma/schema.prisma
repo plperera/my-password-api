@@ -17,12 +17,62 @@ model session {
   user        user?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 model user {
-  id        Int         @id @default(autoincrement())
-  name      String
-  email     String      @unique
-  password  String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id            Int         @id @default(autoincrement())
+  name          String
+  email         String      @unique
+  password      String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   session               session[]
+  savedLogin            savedLogin[]
+  savedCard             savedCard[]
+  saverdOtherNotes      savedOtherNotes[]
+}
+model savedLogin {
+  id                    Int         @id @default(autoincrement())
+  userId                Int
+  name                  String      @unique
+  ref                   String
+  email                 String
+  password              String
+  passwordStrongLevel   String
+  iconName              String
+  color                 String
+
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  user                  user?       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+model savedCard {
+  id                    Int         @id @default(autoincrement())
+  userId                Int
+  name                  String      @unique
+  ownerName             String
+  number                String
+  password              String
+  securityCode          String
+  expirationDate        String
+  issuer                String
+  iconName              String
+  color                 String
+ 
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  user                  user?       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+model savedOtherNotes {
+  id                    Int         @id @default(autoincrement())
+  userId                Int
+  name                  String      @unique
+  text                  String
+  iconName              String
+  color                 String
+ 
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  user                  user?       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
