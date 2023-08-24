@@ -23,6 +23,8 @@ export async function saveItem(req: AuthenticatedRequest, res: Response){
         const { type } = req.body
         
         if (!typeList[type]){
+            console.log(type)
+            console.log("erro de tipo")
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
 
@@ -145,7 +147,7 @@ export async function getDataByItemId(req: AuthenticatedRequest, res: Response){
         const { userId } = req
         const itemId = Number(req.query.itemId)
 
-        if (typeof itemId !== 'number' || itemId <= 0 || Number(itemId.toFixed(0)) !== itemId){
+        if (typeof itemId !== 'number' || itemId <= 0 || Number(itemId.toFixed(0)) !== itemId){    
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
 
@@ -167,7 +169,8 @@ export async function getDataByItemId(req: AuthenticatedRequest, res: Response){
 
         const result = await handlSaveService.findUniqueByItemId({type, userId, itemId})
         
-        if(result.userId !== Number(userId)){
+        if(result.userId !== userId){
+            console.log(result,userId )
             return res.sendStatus(httpStatus.FORBIDDEN)
         }
 

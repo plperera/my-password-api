@@ -8,8 +8,9 @@ export type otherBody = {
 
 }
 
-const otherSCHEMA = joi.object<otherBody>({
+const otherSCHEMA = joi.object<otherBody & {type: number}>({
     name: joi.string().required().min(2),
+    type: joi.string().required().min(1),
     text: joi.string().required().min(1),
     iconName: joi.string().required().min(4),
     color: joi.string().required().min(7), 

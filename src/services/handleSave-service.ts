@@ -71,6 +71,7 @@ async function verifyBelongOtherNotesItem(body: {userId: number, itemId: number}
 }
 async function upsertCard(body: cardBody & userId & { itemId?: number }){
     const cryptedBody = {
+        itemId: body.itemId,
         number: encrypt(body.number),            
         ownerName: body.ownerName,
         password: encrypt(body.password),
@@ -143,6 +144,7 @@ async function findUniqueCardDataById(itemId: number){
     const result = await handleSaveRepository.findUniqueCardDataById(itemId)
     const decryptedResult = {
         id: result.id,
+        userId: result.userId,
         color: result.color,
         expirationDate: result.expirationDate,
         iconName: result.iconName,

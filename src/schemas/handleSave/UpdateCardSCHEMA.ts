@@ -19,7 +19,7 @@ const updateCardSCHEMA = joi.object<updateCardBody>({
     name: joi.string().required().min(2),
     type: joi.string().required().min(2),
     ownerName: joi.string().required().min(2),
-    number: joi.string().required().length(15).regex(/^[0-9]+$/), // Exemplo para um cartão com 16 dígitos
+    number: joi.string().required().min(15).max(16).regex(/^[0-9]+$/), // Exemplo para um cartão com 16 dígitos
     password: joi.string().required().min(4), // Exemplo de senha com pelo menos 4 caracteres
     securityCode: joi.string().required().length(3).regex(/^[0-9]+$/), // Exemplo para um CVV de 3 dígitos
     expirationDate: joi.string().required().regex(/^(0[1-9]|1[0-2])\/[0-9]{2}$/), // Formato MM/YY
