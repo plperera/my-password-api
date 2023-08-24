@@ -1,9 +1,10 @@
 import { badRequestError } from "@/errors/bad-request-erros";
+import { forbiddenError } from "@/errors/forbidden-error";
 import handleSaveRepository, { userId } from "@/repositories/handleSave-repository";
 import { cardBody } from "@/schemas/handleSave/CardSCHEMA";
 import { loginBody } from "@/schemas/handleSave/LoginSCHEMA";
 import { otherBody } from "@/schemas/handleSave/OtherSCHEMA";
-import { encrypt } from "@/utils/crypto";
+import { decrypt, encrypt } from "@/utils/crypto";
 import { savedCard, savedLogin, savedOtherNotes } from "@prisma/client";
 
 async function verifyLogin(body: loginBody){
@@ -50,7 +51,25 @@ async function verifyLogin(body: loginBody){
     
     return
 }
-async function insertCard(body: cardBody & userId){
+async function verifyBelongLoginItem(body: {userId: number, itemId: number}) {
+    const result = await handleSaveRepository.findUniqueLoginDataById(body.itemId)
+    if (result.userId !== body.userId){
+        throw forbiddenError("O item não pertence ao Usuario")
+    }
+}
+async function verifyBelongCardItem(body: {userId: number, itemId: number}) {
+    const result = await handleSaveRepository.findUniqueCardDataById(body.itemId)
+    if (result.userId !== body.userId){
+        throw forbiddenError("O item não pertence ao Usuario")
+    }
+}
+async function verifyBelongOtherNotesItem(body: {userId: number, itemId: number}) {
+    const result = await handleSaveRepository.findUniqueOtherNotesDataById(body.itemId)
+    if (result.userId !== body.userId){
+        throw forbiddenError("O item não pertence ao Usuario")
+    }
+}
+async function upsertCard(body: cardBody & userId & { itemId?: number }){
     const cryptedBody = {
         number: encrypt(body.number),            
         ownerName: body.ownerName,
@@ -63,19 +82,19 @@ async function insertCard(body: cardBody & userId){
         securityCode: encrypt(body.securityCode),
         userId: body.userId
     }
-    await handleSaveRepository.createCard(cryptedBody)
+    await handleSaveRepository.upsertCard(cryptedBody)
     return
 }
-async function insertLogin(body: loginBody & userId){
+async function upsertLogin(body: loginBody & userId & { itemId?: number }){
     const cryptedBody = {
         ...body,
         password: encrypt(body.password)
     }
-    await handleSaveRepository.createLogin(cryptedBody)
+    await handleSaveRepository.upsertLogin(cryptedBody)
     return
 }
-async function insertOtherNotes(body: otherBody & userId){
-    await handleSaveRepository.createOther(body)
+async function upsertOtherNotes(body: otherBody & userId & { itemId?: number }){
+    await handleSaveRepository.upsertOther(body)
     return
 }
 async function findAllData(userId: number){
@@ -110,6 +129,45 @@ async function findByFilter(body: {includesArray: string[], orderBy: string, use
     const formatedArray = orderByOptions[body.orderBy]
     return formatedArray
 }
+async function findUniqueByItemId(body: {type: string, userId: number, itemId: number}){
+    const getUniqueData = {
+        card: () => findUniqueCardDataById(body.itemId),
+        login: () => findUniqueLoginDataById(body.itemId),
+        other: () => findUniqueOtherNotesDataById(body.itemId)
+    }
+    const result = await getUniqueData[body.type]
+    return result
+}
+async function findUniqueCardDataById(itemId: number){
+    const result = await handleSaveRepository.findUniqueCardDataById(itemId)
+    const decryptedResult = {
+        id: result.id,
+        color: result.color,
+        expirationDate: result.expirationDate,
+        iconName: result.iconName,
+        issuer: result.issuer,
+        name: result.name,
+        number: decrypt(result.number),
+        ownerName: result.ownerName,
+        password: decrypt(result.password),
+        securityCode: decrypt(result.securityCode),
+        createdAt: result.createdAt,
+        updatedAt: result.updatedAt,
+    }
+    return decryptedResult
+} 
+async function findUniqueLoginDataById(itemId: number){
+    const result = await handleSaveRepository.findUniqueLoginDataById(itemId)
+    const decryptedResult = {
+        ...result,
+        password: encrypt(result.password)
+    }
+    return decryptedResult
+} 
+async function findUniqueOtherNotesDataById(itemId: number){
+    const result = await handleSaveRepository.findUniqueOtherNotesDataById(itemId)
+    return result
+} 
 function orderByUpdatedAt(arr: (savedOtherNotes | savedCard | savedLogin)[], mostRecentFirst: boolean){
     if (mostRecentFirst){
         const formatedArray = arr.sort((a, b) => {
@@ -147,13 +205,30 @@ function orderByStrongLevel(arr: (savedOtherNotes | savedCard | savedLogin)[], m
     });
     return formatedArray
 }
+async function deleteItem(body: {type: string, itemId: number}){
+    if (body.type === "card"){
+        return await handleSaveRepository.deleteUniqueCardById(body.itemId)        
+    }
+    if (body.type === "login"){
+        return await handleSaveRepository.deleteUniqueLoginById(body.itemId)
+    }
+    if (body.type === "other"){
+        return await handleSaveRepository.deleteUniqueOtherNotesById(body.itemId)
+    }
+}
+
 const handlSaveService = {
     verifyLogin,
-    insertLogin,
-    insertCard,
-    insertOtherNotes,
+    upsertLogin,
+    upsertCard,
+    upsertOtherNotes,
     findAllData,
-    findByFilter
+    findByFilter,
+    findUniqueByItemId,
+    verifyBelongLoginItem,
+    verifyBelongCardItem,
+    verifyBelongOtherNotesItem,
+    deleteItem
 }
 
 export default handlSaveService

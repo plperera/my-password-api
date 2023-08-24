@@ -1,4 +1,4 @@
-import { getAllData, getAllDataByFilter, save } from '@/controllers/handleSave-controller'
+import { deleteByItemId, getAllData, getAllDataByFilter, getDataByItemId, saveItem, updateItem } from '@/controllers/handleSave-controller'
 import { authenticateToken } from '@/middlewares/authentication-middlerare'
 import { Router } from 'express'
 
@@ -8,7 +8,8 @@ handleSaveRouter
     .all("/*", authenticateToken)
     .get("", getAllData)
     .get("", getAllDataByFilter)
-    .post("", save)
-    .put("", )
-    .delete("", )
+    .get("/unique", getDataByItemId)
+    .post("", saveItem)
+    .put("", updateItem)
+    .delete("", deleteByItemId)
 export { handleSaveRouter }
