@@ -32,7 +32,7 @@ model user {
 model savedLogin {
   id                    Int         @id @default(autoincrement())
   userId                Int
-  name                  String      @unique
+  name                  String  
   ref                   String
   email                 String
   password              String

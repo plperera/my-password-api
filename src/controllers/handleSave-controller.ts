@@ -19,8 +19,9 @@ export async function saveItem(req: AuthenticatedRequest, res: Response){
             login: true,
             other: true,
         }
-        const { type } = req.body
 
+        const { type } = req.body
+        
         if (!typeList[type]){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
@@ -57,6 +58,7 @@ export async function saveItem(req: AuthenticatedRequest, res: Response){
             }
             await handlSaveService.upsertOtherNotes({userId, ...req.body})
         }
+        
         return res.sendStatus(httpStatus.CREATED)  
 
     } catch (error) {
@@ -69,6 +71,7 @@ export async function saveItem(req: AuthenticatedRequest, res: Response){
         if (error.name === "ForbiddenError") {
             return res.status(httpStatus.FORBIDDEN).send(error);
         }
+        console.log(error)
         return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
     }
 }
@@ -96,16 +99,16 @@ export async function getAllDataByFilter(req: AuthenticatedRequest, res: Respons
         const { userId } = req
 
         const { includes, orderBy } = req.query;
-
+        
         if (typeof includes !== 'string' || typeof orderBy !== 'string') {
             return res.sendStatus(httpStatus.BAD_REQUEST);
         }
-
-        const includesArray = includes.split("&")
+        
+        const includesArray = includes.split("AND")//rever
         
         if(includesArray.filter(
             e => ((e === "card") || (e === "other") || (e === "login"))
-        ).length === includesArray.length && includesArray.length !== 0) {
+        ).length === includesArray.length && includesArray.length === 0) {
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
 
@@ -119,7 +122,7 @@ export async function getAllDataByFilter(req: AuthenticatedRequest, res: Respons
         if (!orderByOptions[orderBy]){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
-
+        
         const result = await handlSaveService.findByFilter({includesArray, orderBy, userId})
 
         return res.send(result).status(httpStatus.CREATED)  
@@ -151,6 +154,7 @@ export async function getDataByItemId(req: AuthenticatedRequest, res: Response){
             login: true,
             other: true,
         }
+        
         const type = req.query.type
 
         if (typeof type !== 'string'){
@@ -162,8 +166,8 @@ export async function getDataByItemId(req: AuthenticatedRequest, res: Response){
         }
 
         const result = await handlSaveService.findUniqueByItemId({type, userId, itemId})
-
-        if(result.userId !== userId){
+        
+        if(result.userId !== Number(userId)){
             return res.sendStatus(httpStatus.FORBIDDEN)
         }
 
@@ -231,7 +235,7 @@ export async function updateItem(req: AuthenticatedRequest, res: Response){
             await handlSaveService.verifyBelongOtherNotesItem({userId: userId, itemId: req.body.itemId})
             await handlSaveService.upsertOtherNotes({userId, ...req.body})
         }
-        return res.sendStatus(httpStatus.CREATED)  
+        return res.sendStatus(httpStatus.OK)  
 
     } catch (error) {
         if(error.name === "ConflictError") {
@@ -249,7 +253,7 @@ export async function updateItem(req: AuthenticatedRequest, res: Response){
 export async function deleteByItemId(req: AuthenticatedRequest, res: Response){
     try {
         const { userId } = req
-        const itemId = Number(req.query.itemId)
+        const { itemId } = req.body
 
         if (typeof itemId !== 'number' || itemId <= 0 || Number(itemId.toFixed(0)) !== itemId){
             return res.sendStatus(httpStatus.BAD_REQUEST)
@@ -260,12 +264,12 @@ export async function deleteByItemId(req: AuthenticatedRequest, res: Response){
             login: true,
             other: true,
         }
-        const type = req.query.type
+        const { type } = req.body
 
         if (typeof type !== 'string'){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
-
+        console.log("!")
         if (!typeList[type]){
             return res.sendStatus(httpStatus.BAD_REQUEST)
         }
@@ -278,7 +282,7 @@ export async function deleteByItemId(req: AuthenticatedRequest, res: Response){
 
         await handlSaveService.deleteItem({type, itemId})
 
-        return res.sendStatus(httpStatus.CREATED)  
+        return res.sendStatus(httpStatus.OK)  
 
     } catch (error) {
         if(error.name === "ConflictError") {

@@ -16,6 +16,7 @@ async function upsertLogin(body: loginBody & userId & { itemId?: number }) {
             id: body.itemId || -1,        
         },
         update: {
+            name: body.name,
             ref: body.ref,
             email: body.email,
             password: body.password,

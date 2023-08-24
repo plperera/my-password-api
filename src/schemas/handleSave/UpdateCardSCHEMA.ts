@@ -2,6 +2,7 @@ import joi from "joi"
 
 export type updateCardBody = {
     itemId: number,
+    type: number,
     name: string,
     ownerName: string,
     number: string,
@@ -16,6 +17,7 @@ export type updateCardBody = {
 const updateCardSCHEMA = joi.object<updateCardBody>({
     itemId: joi.number().required(),
     name: joi.string().required().min(2),
+    type: joi.string().required().min(2),
     ownerName: joi.string().required().min(2),
     number: joi.string().required().length(15).regex(/^[0-9]+$/), // Exemplo para um cartão com 16 dígitos
     password: joi.string().required().min(4), // Exemplo de senha com pelo menos 4 caracteres

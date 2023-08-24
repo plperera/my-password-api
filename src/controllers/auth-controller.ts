@@ -73,13 +73,11 @@ export async function signIn(req: Request, res: Response) {
 }
 export async function logout(req: AuthenticatedRequest, res: Response) {
     try {
-
         const { userId } = req
         
         await authService.deleteSession(userId)
 
-        return res.sendStatus(httpStatus.OK)
-        
+        return res.sendStatus(httpStatus.OK)   
 
     } catch (error) {
 

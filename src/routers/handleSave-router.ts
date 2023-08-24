@@ -7,7 +7,7 @@ const handleSaveRouter = Router()
 handleSaveRouter
     .all("/*", authenticateToken)
     .get("", getAllData)
-    .get("", getAllDataByFilter)
+    .get("/filter", getAllDataByFilter)
     .get("/unique", getDataByItemId)
     .post("", saveItem)
     .put("", updateItem)

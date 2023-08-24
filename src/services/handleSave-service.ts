@@ -26,26 +26,26 @@ async function verifyLogin(body: loginBody){
 
     const levelRef = {
         0: {
-            strongLevel: "Fraca",
+            strongLevel: "fraca",
         },
         1: {
-            strongLevel: "Fraca",
+            strongLevel: "fraca",
         },
         2: {
-            strongLevel: "Fraca",
+            strongLevel: "fraca",
         },
         3: {
-            strongLevel: "Fraca",
+            strongLevel: "fraca",
         },
         4: {
-            strongLevel: "Fraca",
+            strongLevel: "fraca",
         },
         5: {
-            strongLevel: "FORTE",
+            strongLevel: "forte",
         }
     } 
 
-    if (levelRef[cont] === body.passwordStrongLevel){
+    if (levelRef[cont].strongLevel !== body.passwordStrongLevel){
         throw badRequestError("Level da Senha inválido")
     }
     
@@ -88,6 +88,7 @@ async function upsertCard(body: cardBody & userId & { itemId?: number }){
 async function upsertLogin(body: loginBody & userId & { itemId?: number }){
     const cryptedBody = {
         ...body,
+        passwordStrongLevel: body.passwordStrongLevel.toLowerCase(),
         password: encrypt(body.password)
     }
     await handleSaveRepository.upsertLogin(cryptedBody)
@@ -120,13 +121,13 @@ async function findByFilter(body: {includesArray: string[], orderBy: string, use
         filteredArray = [... filteredArray, ...responseLogin]
     }
     const orderByOptions = {
-        orderByUpdatedAtAsc: orderByUpdatedAt(filteredArray, false),
-        orderByUpdatedAtDesc: orderByUpdatedAt(filteredArray, true),
-        orderByPasswordStrongLeverAsc: orderByStrongLevel(filteredArray, false),
-        orderByPasswordStrongLeverDesc: orderByStrongLevel(filteredArray, true)
+        orderByUpdatedAtAsc: () => orderByUpdatedAt(filteredArray, false),
+        orderByUpdatedAtDesc:  () => orderByUpdatedAt(filteredArray, true),
+        orderByPasswordStrongLeverAsc:  () => orderByStrongLevel(filteredArray, false),
+        orderByPasswordStrongLeverDesc: () =>  orderByStrongLevel(filteredArray, true)
     }
 
-    const formatedArray = orderByOptions[body.orderBy]
+    const formatedArray = orderByOptions[body.orderBy]()
     return formatedArray
 }
 async function findUniqueByItemId(body: {type: string, userId: number, itemId: number}){
@@ -135,7 +136,7 @@ async function findUniqueByItemId(body: {type: string, userId: number, itemId: n
         login: () => findUniqueLoginDataById(body.itemId),
         other: () => findUniqueOtherNotesDataById(body.itemId)
     }
-    const result = await getUniqueData[body.type]
+    const result = await getUniqueData[body.type]()
     return result
 }
 async function findUniqueCardDataById(itemId: number){
@@ -160,7 +161,7 @@ async function findUniqueLoginDataById(itemId: number){
     const result = await handleSaveRepository.findUniqueLoginDataById(itemId)
     const decryptedResult = {
         ...result,
-        password: encrypt(result.password)
+        password: decrypt(result.password)
     }
     return decryptedResult
 } 
@@ -188,22 +189,20 @@ function getStrongLevelScore(item: savedOtherNotes | savedCard | savedLogin): nu
         semSenha: 0
     };
     if ('passwordStrongLevel' in item) {
+        console.log(item, StrongLevelScore[item.passwordStrongLevel])
         return StrongLevelScore[item.passwordStrongLevel];
     } else {
+        console.log(item, StrongLevelScore.semSenha)
         return StrongLevelScore.semSenha;
     }
 }
 function orderByStrongLevel(arr: (savedOtherNotes | savedCard | savedLogin)[], mostRatedFirst: boolean){
-    if (mostRatedFirst){
-        const formatedArray = arr.sort((a, b) => {
-            return getStrongLevelScore(b) - getStrongLevelScore(a);
-        });
-        return formatedArray
-    }
-    const formatedArray = arr.sort((a, b) => {
-        return getStrongLevelScore(a) - getStrongLevelScore(b);
+    const sortedArray = [...arr].sort((a, b) => {
+        return mostRatedFirst 
+            ? getStrongLevelScore(a) - getStrongLevelScore(b) 
+            : getStrongLevelScore(b) - getStrongLevelScore(a);
     });
-    return formatedArray
+    return sortedArray;
 }
 async function deleteItem(body: {type: string, itemId: number}){
     if (body.type === "card"){
