@@ -54,7 +54,6 @@ async function deleteSession(userId: number){
     return 
 }
 
-
 const authService = {
     verifyUser,
     createNewUser,

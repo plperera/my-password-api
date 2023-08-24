@@ -3,7 +3,6 @@ import cors from "cors";
 import express, { Express } from "express";
 import "reflect-metadata";
 import "express-async-errors";
-import { testeRouter } from "./routers/teste-router";
 import { authRouter } from "./routers/auth-router";
 
 loadEnv();
@@ -12,7 +11,6 @@ const app = express();
 app
   .use(cors())
   .use(express.json())
-  .use("/teste", testeRouter)
   .use("/auth", authRouter)
   .get("/health", (_req, res) => res.send("OK!"))
 
