@@ -23,6 +23,7 @@ export async function signUp(req: Request, res: Response){
         return res.sendStatus(httpStatus.CREATED)  
 
     } catch (error) {
+        console.log(error)
         if(error.name === "ConflictError") {
             return res.sendStatus(httpStatus.CONFLICT);
         }

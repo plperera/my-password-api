@@ -13,7 +13,7 @@ export type cardBody = {
 }
 
 const cardSCHEMA = joi.object<cardBody & {type: number}>({
-    name: joi.string().required().min(2),
+    name: joi.string().required().min(1),
     type: joi.string().required().min(1),
     ownerName: joi.string().required().min(2),
     number: joi.string().required().min(15).max(16).regex(/^[0-9]+$/), // Exemplo para um cartão com 16 dígitos

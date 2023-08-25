@@ -16,10 +16,10 @@ const app = express();
 app
   .use(cors())
   .use(express.json())
-  .use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
   .use("/auth", authRouter)
   .use("/item", handleSaveRouter)
   .get("/health", (_req, res) => res.send("OK!"))
+  //.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 export function init(): Promise<Express> {
   connectDb();
