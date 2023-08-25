@@ -1,0 +1,901 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de gerenciamento Credenciais",
+        "description": "Essa API tem como objetivo facilitar o gerenciamento de dados como: logins, notas e cartões de forma segura",
+        "contact": {
+            "url": "https://www.linkedin.com/in/pedro-leoncio/"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:4000",
+            "description": "API - local"
+        }
+    ],
+    "paths": {
+        "/auth/sign-up": {
+            "post": {
+                "summary": "Cadastro de Usuario",
+                "description": "Essa rota será responsavel por cadastrar um novo Usuario",
+                "tags": ["User"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewUser"
+                            },
+                            "examples": {
+                                "product": {
+                                    "value": {
+                                        "email": "pedro@wepass.com",
+                                        "name": "Pedro",
+                                        "password": "SenhasIguais123!@#",
+                                        "passwordVerify": "SenhasIguais123!@#"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "409": {
+                        "description": "Email já cadastrado"
+                    },
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/auth/sign-in": {
+            "post": {
+                "summary": "Criação de Sessão",
+                "description": "Essa rota será responsavel por criar uma sessão para um Usuario",
+                "tags": ["User"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewSession"
+                            },
+                            "examples": {
+                                "product": {
+                                    "value": {
+                                        "email": "pedro@wepass.com",
+                                        "password": "SenhasIguais123!@#"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "summary": "Criação de Sessão",
+                "description": "Essa rota será responsavel por criar uma sessão para um Usuario",
+                "tags": ["User"],
+                "security": [{ "bearerAuth": []}],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserData"
+                                },
+                                "examples": {
+                                    "product": {
+                                        "value": {
+                                            "email": "pedro@wepass.com",
+                                            "name": "Pedro",
+                                            "token": "JWT TOKEN"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item": {
+            "get": {
+                "summary": "Busca por Credenciais do Usuario",
+                "description": "Essa rota será responsavel por passar todos as credenciais salvas pelo Usuario",
+                "tags": ["Item"],
+                "security": [{ "bearerAuth": []}],
+                "responses": {
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetCardItem"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Criação de um novo Item",
+                "description": "Essa rota será responsavel por criar uma item(credencial) para um Usuario",
+                "tags": ["Item"],
+                "security": [{ "bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewItem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualiza um Item",
+                "description": "Essa rota será responsavel por atualizar dados de um item(credencial) do Usuario",
+                "tags": ["Item"],
+                "security": [{ "bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateItem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "403": {
+                        "description": "O item não esta atrelado ao usuario"
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remove um Item",
+                "description": "Essa rota será responsavel por APAGAR dados de um item(credencial) do Usuario",
+                "tags": ["Item"],
+                "security": [{ "bearerAuth": []}],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteItem"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "403": {
+                        "description": "O item não esta atrelado ao usuario"
+                    },
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/item/filter": {
+            "get": {
+                "summary": "Busca por Credenciais do Usuario com um Filtro",
+                "description": "Essa rota será responsavel por passar todos as credenciais salvas pelo Usuario seguindo um Filtro",
+                "tags": ["Item"],
+                "security": [{ "bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "includes",
+                        "in": "query",
+                        "description": "Seleciona os Tipos de Credenciais (cardANDotherANDlogin)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "orderBy",
+                        "in": "query",
+                        "description": "Responsavel pela ordenação dos resultados (Ex.: orderByUpdatedAtAsc | orderByPasswordStrongLeverDesc)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetCardItem"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/item/unique": {
+            "get": {
+                "summary": "Busca por Credenciais do Usuario atraves do Tipo e do ID",
+                "description": "Essa rota será responsavel por a credencial descriptografada para Usuario",
+                "tags": ["Item"],
+                "security": [{ "bearerAuth": []}],
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "query",
+                        "description": "Id do Item a ser buscado",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Tipo do Item a ser buscado",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Acesso Negado"
+                    },
+                    "403": {
+                        "description": "O item não esta atrelado ao usuario"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUniqueCardItem"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "NewUser": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 2
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 5
+                    },
+                    "passwordVerify": {
+                        "type": "string",
+                        "minLength": 5
+                    }
+                }
+            },
+            "NewSession": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 5
+                    }
+                }
+            },
+            "UserData": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "type": "string",
+                        "minLength": 5
+                    }
+                }
+            },
+            "NewItem": {
+                "type": "object",
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "ownerName": {
+                                "type": "string",
+                                "minLength": 2,
+                                "description": "Número impresso no cartão"
+                            },
+                            "number": {
+                                "type": "string",
+                                "description": "Número do cartão"
+                            },
+                            "password": {
+                                "type": "string",
+                                "minLength": 4
+                            },
+                            "securityCode": {
+                                "type": "string",
+                                "minLength": 3
+                            },
+                            "expirationDate": {
+                                "type": "string",
+                                "description": "Data de validade do cartão no formato MM/YY"
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            },
+                            "issuer": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            }     
+                        }         
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "password": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            },
+                            "ref": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "passwordStrongLevel": {
+                                "type": "string"
+                            }      
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "text": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            }
+                        }
+                    }
+                ]
+                
+            },
+            "UpdateItem": {
+                "type": "object",
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "itemId": {
+                                "type": "integer",
+                                "minLength": 1
+                            },
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "ownerName": {
+                                "type": "string",
+                                "minLength": 2,
+                                "description": "Número impresso no cartão"
+                            },
+                            "number": {
+                                "type": "string",
+                                "description": "Número do cartão"
+                            },
+                            "password": {
+                                "type": "string",
+                                "minLength": 4
+                            },
+                            "securityCode": {
+                                "type": "string",
+                                "minLength": 3
+                            },
+                            "expirationDate": {
+                                "type": "string",
+                                "description": "Data de validade do cartão no formato MM/YY"
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            },
+                            "issuer": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            }                    
+                        }     
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "itemId": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "password": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            },
+                            "ref": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "passwordStrongLevel": {
+                                "type": "string"
+                            } 
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "typeId": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "text": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            }
+                        }
+                    }
+                ]
+                
+            },
+            "DeleteItem": {
+                "type": "object",
+                "properties": {
+                    "itemId": {
+                        "type": "number",
+                        "description": "ID do item a ser atualizado"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Tipo do item a ser atualizado"
+                    }
+                }
+            },
+            "GetCardItem": {
+                "type": "array",
+                "items": {
+                    "oneOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "itemId": {
+                                    "type": "integer",
+                                    "minLength": 1
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "minLength": 2
+                                },                    
+                                "ownerName": {
+                                    "type": "string",
+                                    "minLength": 2,
+                                    "description": "Número impresso no cartão"
+                                },
+                                "number": {
+                                    "type": "string",
+                                    "description": "Número do cartão"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "minLength": 4
+                                },
+                                "securityCode": {
+                                    "type": "string",
+                                    "minLength": 3
+                                },
+                                "expirationDate": {
+                                    "type": "string",
+                                    "description": "Data de validade do cartão no formato MM/YY"
+                                },
+                                "iconName": {
+                                    "type": "string",
+                                    "description": "Nome do Icone atrelado ao Item"
+                                },
+                                "color": {
+                                    "type": "string",
+                                    "minLength": 7,
+                                    "description": "Codigo de Cor atrelada ao Item"
+                                },
+                                "issuer": {
+                                    "type": "string",
+                                    "minLength": 7,
+                                    "description": "Codigo de Cor atrelada ao Item"
+                                }                    
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "itemId": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "minLength": 2
+                                },                    
+                                "password": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "iconName": {
+                                    "type": "string",
+                                    "description": "Nome do Icone atrelado ao Item"
+                                },
+                                "color": {
+                                    "type": "string",
+                                    "minLength": 7,
+                                    "description": "Codigo de Cor atrelada ao Item"
+                                },
+                                "ref": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "passwordStrongLevel": {
+                                    "type": "string"
+                                } 
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "typeId": {
+                                    "type": "string"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "minLength": 2
+                                },                    
+                                "text": {
+                                    "type": "string",
+                                    "minLength": 1
+                                },
+                                "iconName": {
+                                    "type": "string",
+                                    "description": "Nome do Icone atrelado ao Item"
+                                },
+                                "color": {
+                                    "type": "string",
+                                    "minLength": 7,
+                                    "description": "Codigo de Cor atrelada ao Item"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "GetUniqueCardItem": {
+                "type": "object",
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "itemId": {
+                                "type": "integer",
+                                "minLength": 1
+                            },
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "ownerName": {
+                                "type": "string",
+                                "minLength": 2,
+                                "description": "Número impresso no cartão"
+                            },
+                            "number": {
+                                "type": "string",
+                                "description": "Número do cartão"
+                            },
+                            "password": {
+                                "type": "string",
+                                "minLength": 4
+                            },
+                            "securityCode": {
+                                "type": "string",
+                                "minLength": 3
+                            },
+                            "expirationDate": {
+                                "type": "string",
+                                "description": "Data de validade do cartão no formato MM/YY"
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            },
+                            "issuer": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            }                    
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "itemId": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "password": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            },
+                            "ref": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "passwordStrongLevel": {
+                                "type": "string"
+                            } 
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "typeId": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "minLength": 2
+                            },                    
+                            "text": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "iconName": {
+                                "type": "string",
+                                "description": "Nome do Icone atrelado ao Item"
+                            },
+                            "color": {
+                                "type": "string",
+                                "minLength": 7,
+                                "description": "Codigo de Cor atrelada ao Item"
+                            }
+                        }
+                    }
+                ]
+                
+            },
+            "FilterBody": {
+                "type": "object",
+                "properties": {
+                    "includes": {
+                        "type": "string"
+                    },
+                    "orderBy": {
+                        "type": "string",
+                        "minLength": 2
+                    }
+                }
+            }
+        }
+    },
+    "securitySchemes": {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+}

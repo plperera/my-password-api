@@ -1,0 +1,229 @@
+"NewCardItem": {
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "minLength": 2
+        },                    
+        "ownerName": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Número impresso no cartão"
+        },
+        "number": {
+            "type": "string",
+            "description": "Número do cartão"
+        },
+        "password": {
+            "type": "string",
+            "minLength": 4
+        },
+        "securityCode": {
+            "type": "string",
+            "minLength": 3
+        },
+        "expirationDate": {
+            "type": "string",
+            "description": "Data de validade do cartão no formato MM/YY"
+        },
+        "iconName": {
+            "type": "string",
+            "description": "Nome do Icone atrelado ao Item"
+        },
+        "color": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        },
+        "issuer": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        }                    
+    }
+},
+"NewLoginItem": {
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "minLength": 2
+        },                    
+        "password": {
+            "type": "string",
+            "minLength": 1
+        },
+        "iconName": {
+            "type": "string",
+            "description": "Nome do Icone atrelado ao Item"
+        },
+        "color": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        },
+        "ref": {
+            "type": "string"
+        },
+        "email": {
+            "type": "string"
+        },
+        "passwordStrongLevel": {
+            "type": "string"
+        }      
+    }
+},
+"NewOtherNotesItem": {
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "minLength": 2
+        },                    
+        "text": {
+            "type": "string",
+            "minLength": 1
+        },
+        "iconName": {
+            "type": "string",
+            "description": "Nome do Icone atrelado ao Item"
+        },
+        "color": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        }
+    }
+},
+"UpdateCardItem": {
+    "type": "object",
+    "properties": {
+        "itemId": {
+            "type": "integer",
+            "minLength": 1
+        },
+        "type": {
+            "type": "string",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "minLength": 2
+        },                    
+        "ownerName": {
+            "type": "string",
+            "minLength": 2,
+            "description": "Número impresso no cartão"
+        },
+        "number": {
+            "type": "string",
+            "description": "Número do cartão"
+        },
+        "password": {
+            "type": "string",
+            "minLength": 4
+        },
+        "securityCode": {
+            "type": "string",
+            "minLength": 3
+        },
+        "expirationDate": {
+            "type": "string",
+            "description": "Data de validade do cartão no formato MM/YY"
+        },
+        "iconName": {
+            "type": "string",
+            "description": "Nome do Icone atrelado ao Item"
+        },
+        "color": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        },
+        "issuer": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        }                    
+    }
+},
+"UpdateLoginItem": {
+    "type": "object",
+    "properties": {
+        "itemId": {
+            "type": "string",
+            "minLength": 1
+        },
+        "type": {
+            "type": "string",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "minLength": 2
+        },                    
+        "password": {
+            "type": "string",
+            "minLength": 1
+        },
+        "iconName": {
+            "type": "string",
+            "description": "Nome do Icone atrelado ao Item"
+        },
+        "color": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        },
+        "ref": {
+            "type": "string"
+        },
+        "email": {
+            "type": "string"
+        },
+        "passwordStrongLevel": {
+            "type": "string"
+        } 
+    }
+},
+"UpdateOtherNotesItem": {
+    "type": "object",
+    "properties": {
+        "typeId": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string",
+            "minLength": 1
+        },
+        "name": {
+            "type": "string",
+            "minLength": 2
+        },                    
+        "text": {
+            "type": "string",
+            "minLength": 1
+        },
+        "iconName": {
+            "type": "string",
+            "description": "Nome do Icone atrelado ao Item"
+        },
+        "color": {
+            "type": "string",
+            "minLength": 7,
+            "description": "Codigo de Cor atrelada ao Item"
+        }
+    }
+},
