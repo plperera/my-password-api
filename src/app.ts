@@ -19,7 +19,7 @@ app
   .use("/auth", authRouter)
   .use("/item", handleSaveRouter)
   .get("/health", (_req, res) => res.send("OK!"))
-  //.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+  .use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 export function init(): Promise<Express> {
   connectDb();
