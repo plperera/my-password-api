@@ -14,10 +14,8 @@
     "dev": "set NODE_ENV=development && nodemon --watch src/ --exec \"ts-node -r tsconfig-paths/register ./src/server.ts\" -e ts"
   },
   "keywords": [
-    "driven.t",
     "back-end",
     "typescript",
-    "driven",
     "postgres",
     "express",
     "nodejs"
@@ -25,7 +23,7 @@
   "_moduleAliases": {
     "@": "./dist"
   },
-  "author": "Pedro Pereira",
+  "author": "Pedro Leoncio",
   "license": "ISC",
   "devDependencies": {
     "@faker-js/faker": "^6.3.1",
